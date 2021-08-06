@@ -3,6 +3,7 @@
 
 require_once get_theme_file_path( '/inc/tgm.php' );
 require_once get_theme_file_path( '/inc/attachments.php' );
+require_once get_theme_file_path( '/inc/cmb2-attached-posts.php' );
 require_once get_theme_file_path( '/inc/customizer.php' );
 require_once( get_theme_file_path( "/widgets/social-icons-widget.php" ) );
 
@@ -412,3 +413,29 @@ add_action("pre_get_posts","philosophy_modify_main_query");
     return $post_link;
  }
 add_filter("post_type_link", "philosophy_cpt_chapter_slug_fix",1,2);
+
+
+
+// Conditionally Load Footer Tags and Languages
+function philosophy_footer_language_heading( $title ) {
+    if ( is_post_type_archive( 'book' ) || is_tax('language') ) {
+        $title = __( 'Languages', 'philosophy' );
+    }
+
+    return $title;
+}
+
+add_filter( 'philosophy_footer_tag_heading', 'philosophy_footer_language_heading' );
+
+function philosophy_footer_language_terms( $tags ) {
+    if ( is_post_type_archive( 'book' ) || is_tax('language') ) {
+        $tags = get_terms( array(
+            'taxonomy'   => 'language',
+            'hide_empty' => true
+        ) );
+    }
+    return $tags;
+}
+
+add_filter( 'philosophy_footer_tag_items', 'philosophy_footer_language_terms' );
+

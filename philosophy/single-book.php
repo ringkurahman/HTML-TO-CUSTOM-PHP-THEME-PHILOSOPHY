@@ -32,9 +32,48 @@ get_header();
             <div class="col-full s-content__main">
 
                 <?php
+
                 the_content();
                 wp_link_pages();
-                ?>
+
+                // Chapter Link and Chapter Title Below Single Book Post
+                $philosophy_chargs = array(
+                    'post_type'  => 'chapter',
+                    'posts_per_page'     => -1,
+                    'meta_key' => 'parent_book',
+                    'meta_value' => get_the_ID(),
+                );
+
+                $philosophy_chapters = new WP_Query($philosophy_chargs);
+
+                echo '<h3>';
+                    _e('Chapters', 'philosophy');
+                echo '</h3>';
+
+                while($philosophy_chapters->have_posts()){
+                    $philosophy_chapters->the_post();
+                    $philosophy_chapter_link = get_the_permalink();
+                    $philosophy_chapter_title = get_the_title();
+
+                    printf( "<a href='%s'>%s</a><br/>",$philosophy_chapter_link,$philosophy_chapter_title );
+                }
+                wp_reset_query();
+
+                // Chapters order by author
+                // echo "<h3>";
+                // _e('Chapters','philosophy');
+                // echo "</h3>";
+
+                // $philosophy_cmb2_chapters = get_post_meta( get_the_ID(), 'attached_cmb2_attached_posts', true );
+                // //print_r($philosophy_cmb2_chapters);
+
+                // foreach($philosophy_cmb2_chapters as $pch){
+                //     $$philosophy_chapter_link = get_the_permalink($pch);
+                //     $philosophy_chapter_title = get_the_title($pch);
+
+                //     printf("<a href='%s'>%s</a><br/>",$$philosophy_chapter_link,$philosophy_chapter_title);
+                // }
+                // ?>
 
                 <p class="s-content__tags">
                     <span>Post Tags</span>
@@ -42,6 +81,16 @@ get_header();
                     <span class="s-content__tag-list">
                         <?php
                         the_tags( "", "", "" );
+                        ?>
+                    </span>
+                </p> <!-- end s-content__tags -->
+
+                <p class="s-content__tags">
+                    <span><?php _e("Language",'philosophy') ?></span>
+
+                    <span class="s-content__tag-list">
+                        <?php
+                        the_terms(get_the_ID(),'language','','','');
                         ?>
                     </span>
                 </p> <!-- end s-content__tags -->
