@@ -18,6 +18,7 @@
 
             <div class="grid-sizer"></div>
 
+                <!-- Featured Book WP Query -->
             <?php
               $philosophy_cpt_arguments = array(
                 'post_type' => 'book',
