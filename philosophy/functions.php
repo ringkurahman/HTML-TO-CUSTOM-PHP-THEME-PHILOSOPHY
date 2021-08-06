@@ -395,3 +395,20 @@ add_action("pre_get_posts","philosophy_modify_main_query");
  * add_filter("acf/settings/show_admin", "__return_false");
  */
 
+
+
+ // CPT Relation with Parent and Child
+ function philosophy_cpt_chapter_slug_fix($post_link, $id){
+    $cpt_post = get_post($id);
+
+    if( is_object( $cpt_post ) && 'chapter' == get_post_type( $id )){
+        $cpt_parent_post_id = get_field('parent_book');
+        $cpt_parent_post = get_post($cpt_parent_post_id);
+
+        if( $cpt_parent_post ){
+            $post_link = str_replace( "%book%", $cpt_parent_post->post_name,$post_link);
+        }
+    }
+    return $post_link;
+ }
+add_filter("post_type_link", "philosophy_cpt_chapter_slug_fix",1,2);
