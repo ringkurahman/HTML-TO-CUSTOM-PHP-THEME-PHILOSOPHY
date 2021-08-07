@@ -4,8 +4,13 @@
 require_once get_theme_file_path( '/inc/tgm.php' );
 require_once get_theme_file_path( '/inc/attachments.php' );
 require_once get_theme_file_path( '/inc/cmb2-attached-posts.php' );
+require_once get_theme_file_path( '/lib/csf/cs-framework.php' );
+require_once get_theme_file_path( '/inc/cs.php' );
 require_once get_theme_file_path( '/inc/customizer.php' );
 require_once( get_theme_file_path( "/widgets/social-icons-widget.php" ) );
+
+// Codestar Framework Light Theme
+define( 'CS_ACTIVE_LIGHT_THEME', true );
 
 
 // Fix Content Width Issue
@@ -169,51 +174,6 @@ add_action("widgets_init","philosophy_widgets");
 
 
 
-// Action Hook for Category Before Title1
-function category_before_title1() {
-    echo "<p>Before Title 1</p>";
-}
-
-add_action( "philosphy_before_category_title", "category_before_title1" );
-
-
-
-// Action Hook for Category Before Title2
-function category_before_title2() {
-    echo "<p>Before Title 2</p>";
-}
-
-add_action( "philosphy_before_category_title", "category_before_title2", 4 );
-
-
-
-// Action Hook for Category Before Title3
-function category_before_title3() {
-    echo "<p>Before Title 3</p>";
-}
-
-add_action( "philosphy_before_category_title", "category_before_title3", 9 );
-
-
-
-// Action Hook for Category After Title
-function category_after_title() {
-    echo "<p>After Title</p>";
-}
-
-add_action( "philosphy_after_category_title", "category_after_title" );
-
-
-
-// Action Hook for Category After Description
-function category_after_desc() {
-    echo "<p>After Description</p>";
-}
-
-add_action( "philosphy_after_category_description", "category_after_desc" );
-
-
-
 // Action Hook for Homepage Category Visit Count
 function beginning_category_page( $category_title ) {
     if ( "New" == $category_title ) {
@@ -304,93 +264,6 @@ add_filter('the_title', 'philosophy_highlight_search_results');
 
 
 
-// Password Protected Post Description
-function philosophy_the_excerpt($excerpt){
-  if(!post_password_required()){
-    return $excerpt;
-  }else {
-    echo get_the_password_form();
-  }
-}
-add_filter("the_excerpt","philosophy_the_excerpt");
-
-
-
-// Password Protected Post Title
-function philosophy_protected_title_change(){
-  return "%s";
-}
-add_filter("protected_title_format","philosophy_protected_title_change");
-
-
-
-// Top Menu List Item Class Add
-function philosophy_menu_item_class($classes, $item, $args){
-  if ( 'topmenu' === $args->theme_location ) {
-        $classes[] = 'list-inline-item';
-    }
-  return $classes;
-}
-add_filter("nav_menu_css_class","philosophy_menu_item_class", 10, 3);
-
-
-
-// Load Custom Header Background Image on Head
-function philosophy_page_template_background(){
-  if ( is_page() ) {
-            $philosophy_feat_image = get_the_post_thumbnail_url( null, "large" );
-            ?>
-            <style>
-                .page-header {
-                    background-image: url(<?php echo esc_html($philosophy_feat_image);?>);
-                }
-            </style>
-            <?php
-        }
-  if ( is_front_page() ) {
-            if ( current_theme_supports( "custom-header" ) ) {
-                ?>
-                <style>
-                    .header {
-                        background-image: url(<?php header_image();?>);
-                        background-size: cover;
-                        margin-bottom: 50px;
-                    }
-
-                    .header h1.heading a, h3.tagline {
-                        color: #<?php echo get_header_textcolor();?>;
-
-                    <?php
-                    if(!display_header_text()){
-                        echo "display: none;";
-                    }
-                    ?>
-                    }
-
-                </style>
-                <?php
-            }
-        }
-}
-add_action("wp_head","philosophy_page_template_background", 11);
-
-
-
-// Modify WordPress Default Query
-function philosophy_modify_main_query($wpq){
-  if( is_home() && $wpq->is_main_query() ){
-    // Remove Post By ID
-      $wpq->set("post__not_in", array(33));
-      // Remove Post By Tag ID
-      $wpq->set("tag__not_in", array(13));
-      // Remove Post By Category ID
-      $wpq->set("category__not_in", array(13));
-  }
-}
-add_action("pre_get_posts","philosophy_modify_main_query");
-
-
-
 // Remove ACF Tab from Admin Panel
 /**
  * add_filter("acf/settings/show_admin", "__return_false");
@@ -452,4 +325,5 @@ function philosophy_footer_language_terms( $tags ) {
 }
 
 add_filter( 'philosophy_footer_tag_items', 'philosophy_footer_language_terms' );
+
 
