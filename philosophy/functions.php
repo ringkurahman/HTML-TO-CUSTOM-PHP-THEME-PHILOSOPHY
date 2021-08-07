@@ -402,6 +402,7 @@ add_action("pre_get_posts","philosophy_modify_main_query");
  function philosophy_cpt_chapter_slug_fix($post_link, $id){
     $cpt_post = get_post($id);
 
+    // Chapter URL Replace
     if( is_object( $cpt_post ) && 'chapter' == get_post_type( $id )){
         $cpt_parent_post_id = get_field('parent_book');
         $cpt_parent_post = get_post($cpt_parent_post_id);
@@ -410,6 +411,19 @@ add_action("pre_get_posts","philosophy_modify_main_query");
             $post_link = str_replace( "%book%", $cpt_parent_post->post_name,$post_link);
         }
     }
+
+    // Book URL Replace
+    if(is_object($cpt_post) && 'book'==get_post_type($cpt_post)){
+        $genre = wp_get_post_terms($cpt_post->ID,'genre');
+        if(is_array($genre) && count($genre) > 0){
+            $slug = $genre[0]->slug;
+            $post_link = str_replace( "%genre%", $slug, $post_link);
+        }else{
+            $slug = "generic";
+            $post_link = str_replace( "%genre%", $slug, $post_link);
+        }
+    }
+
     return $post_link;
  }
 add_filter("post_type_link", "philosophy_cpt_chapter_slug_fix",1,2);
